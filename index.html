@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>Gmail Email Client</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="css/style.css"/>
+</head>
+  <body>
+    <div class="container">
+      <h1>Gmail Email Client</h1>
+      <form id="email-form">
+        <div class="mb-3">
+          <label for="recipient" class="form-label">Recipient</label>
+          <input type="text" class="form-control" id="recipient" name="recipient" placeholder="Enter email or phone number" required>
+        </div>
+        <div class="mb-3">
+          <label for="subject" class="form-label">Subject</label>
+          <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter email subject" required>
+        </div>
+        <div class="mb-3">
+          <label for="body" class="form-label">Email Body</label>
+          <textarea class="form-control" id="body" name="body" rows="10" placeholder="Enter email body" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Email</button>
+      </form>
+      <div id="loading" class="text-center mt-3" style="display: none;">
+        <img src="https://cdn.dribbble.com/users/437384/screenshots/3383801/email_loader.gif" alt="loading">
+      </div>
+      <div id="success" class="alert alert-success mt-3" style="display: none;">Email sent successfully!</div>
+      <div id="error" class="alert alert-danger mt-3" style="display: none;">Oops, something went wrong. Please try again later.</div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <script>
+      const form = document.getElementById('email-form');
+      const loading = document.getElementById('loading');
+      const success = document.getElementById('success');
+      const error = document.getElementById('error');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        loading.style.display = 'block';
+        success.style.display = 'none';
+        error.style.display = 'none';
+
+        const recipient = document.getElementById('recipient').value;
+        const subject = document.getElementById('subject').value;
+        const body = document.getElementById('body').value;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://www.literallyanything.io/api/integrations/gmail');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            loading.style.display = 'none';
+            success.style.display = 'block';
+            form.reset();
+          } else {
+            loading.style.display = 'none';
+            error.style.display = 'block';
+          }
+        };
+        xhr.send(JSON.stringify({
+          "email": "EMAIL",
+          "password": "PASSWORD",
+          "to": recipient,
+          "subject": subject,
+          "text": body
+        }));
+      });
+    </script>
+  <script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
